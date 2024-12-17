@@ -1,4 +1,4 @@
-import { addonBuilder, ContentType, serveHTTP } from 'stremio-addon-sdk';
+import { addonBuilder, ContentType, serveHTTP, Subtitle } from 'stremio-addon-sdk';
 import axios from 'axios';
 import { MovieMeta } from './interfaces';
 import manifest from './Manifest';
@@ -78,6 +78,16 @@ builder.defineStreamHandler(async args => {
 	}
 });
 
+builder.defineSubtitlesHandler(async args => {
+	try {
+		const subtitles = await fetchSubtitlesFromServer(args.id);
+		return { subtitles };
+	} catch (error) {
+		console.error('Subtitle Handler Error:', error);
+		return { subtitles: [] };
+	}
+});
+
 async function fetchMoviesFromServer() {
 	try {
 		const { data } = await axios.get<MovieMeta[]>(
@@ -86,6 +96,18 @@ async function fetchMoviesFromServer() {
 		return data;
 	} catch (error) {
 		console.error('Error fetching movies:', error);
+		return [];
+	}
+}
+
+async function fetchSubtitlesFromServer(movieId: string) {
+	try {
+		const { data } = await axios.get<Subtitle[]>(
+			`${config.MOVIE_URL}/api/subtitles/${movieId}?code=${config.AUTH_CODE}`
+		);
+		return data;
+	} catch (error) {
+		console.error('Error fetching subtitles:', error);
 		return [];
 	}
 }

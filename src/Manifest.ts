@@ -5,7 +5,7 @@ const manifest: Manifest = {
 	version: '1.0.0',
 	name: 'Stream Vault',
 	description: 'Streams content from your server',
-	resources: ['catalog', 'meta', 'stream'],
+	resources: ['catalog', 'meta', 'stream', 'subtitles'],
 	types: ['movie'],
 	catalogs: [
 		{
