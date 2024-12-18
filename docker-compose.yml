@@ -9,6 +9,7 @@ services:
       - '1337:1337'
     networks:
       - stream_network
+    restart: always
 
 networks:
   stream_network:
