@@ -3,6 +3,7 @@ import axios from 'axios';
 import { MovieMeta } from './interfaces';
 import manifest from './Manifest';
 import config from './config';
+import { TokenManager } from './TokenManager';
 
 const builder = new addonBuilder(manifest);
 
@@ -91,7 +92,7 @@ builder.defineSubtitlesHandler(async args => {
 async function fetchMoviesFromServer() {
 	try {
 		const { data } = await axios.get<MovieMeta[]>(
-			`${config.MOVIE_URL}/api/movies?code=${config.AUTH_CODE}`
+			TokenManager.addTokenToUrl(`${config.MOVIE_URL}/api/movies`)
 		);
 		return data;
 	} catch (error) {
@@ -103,7 +104,7 @@ async function fetchMoviesFromServer() {
 async function fetchSubtitlesFromServer(movieId: string) {
 	try {
 		const { data } = await axios.get<Subtitle[]>(
-			`${config.MOVIE_URL}/api/subtitles/${movieId}?code=${config.AUTH_CODE}`
+			TokenManager.addTokenToUrl(`${config.MOVIE_URL}/api/subtitles/${movieId}`)
 		);
 		return data;
 	} catch (error) {
@@ -114,7 +115,7 @@ async function fetchSubtitlesFromServer(movieId: string) {
 
 async function fetchStreamFromServer(movieId: string) {
 	try {
-		return { url: `${config.STREAM_URL}/api/stream/${movieId}?code=${config.AUTH_CODE}` };
+		return { url: TokenManager.addTokenToUrl(`${config.STREAM_URL}/api/stream/${movieId}`) };
 	} catch (error) {
 		console.error('Error fetching stream:', error);
 		return null;
